@@ -1,124 +1,199 @@
+
+import React from "react";
 import {
-    View,
-    Text,
-    ScrollView,
-    TouchableOpacity,
-    Image,
-    StyleSheet,
-  } from "react-native";
-  import React from "react";
-  import { useNavigation } from "@react-navigation/native"; // Import navigation
-  import {
-    widthPercentageToDP as wp,
-    heightPercentageToDP as hp,
-  } from "react-native-responsive-screen";
-  import Animated, { FadeInDown } from "react-native-reanimated";
-  
-  export default function Categories({
-    categories,
-    activeCategory,
-    handleChangeCategory,
-  }) {
-    const navigation = useNavigation(); // Use navigation
-  
-    return (
-      <Animated.View entering={FadeInDown.duration(500).springify()}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContainer}
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+} from "react-native";
+
+import { useNavigation } from "@react-navigation/native";
+
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+
+import Animated, {
+  FadeInDown,
+} from "react-native-reanimated";
+
+export default function Categories({
+  categories,
+  activeCategory,
+  handleChangeCategory,
+}) {
+  const navigation = useNavigation();
+
+  return (
+    <Animated.View
+      entering={FadeInDown.duration(500).springify()}
+    >
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContainer}
+        testID="categoriesScrollView"
+      >
+        {/* My Food */}
+        <TouchableOpacity
+          onPress={() => navigation.navigate("MyFood")}
+          style={styles.categoryContainer}
+          accessibilityRole="button"
+          accessibilityLabel="My Food"
         >
-          {/* Add "My Food" category */}
-          <TouchableOpacity
-            onPress={() => navigation.navigate("MyFood")} // Navigate to "MyFood" screen
-            style={styles.categoryContainer}
+          <View
+            style={[
+              styles.imageContainer,
+              styles.myFoodButton,
+            ]}
           >
-            <View style={[styles.imageContainer, styles.myFoodButton]}>
-              <Image
-                source={{uri:'https://images.unsplash.com/photo-1495521821757-a1efb6729352?q=80&w=1926&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'}}
-                style={styles.categoryImage}
-              />
-            </View>
-            <Text style={styles.categoryText}>My Food</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("FavoriteScreen")} // Navigate to "MyFood" screen
-            style={styles.categoryContainer}
+            <Image
+              source={{
+                uri: "https://images.unsplash.com/photo-1495521821757-a1efb6729352?q=80&w=1926&auto=format&fit=crop",
+              }}
+              style={styles.categoryImage}
+            />
+          </View>
+
+          <Text style={styles.categoryText}>
+            My Food
+          </Text>
+        </TouchableOpacity>
+
+        {/* My Favorites */}
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("FavoriteScreen")
+          }
+          style={styles.categoryContainer}
+          accessibilityRole="button"
+          accessibilityLabel="My Favorites"
+        >
+          <View
+            style={[
+              styles.imageContainer,
+              styles.myFoodButton,
+            ]}
           >
-            <View style={[styles.imageContainer, styles.myFoodButton]}>
-              <Image
-                source={{uri:'https://images.unsplash.com/photo-1463740839922-2d3b7e426a56?q=80&w=1900&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'}}
-                style={styles.categoryImage}
-              />
-            </View>
-            <Text style={styles.categoryText}>My Favorites</Text>
-          </TouchableOpacity>
-  
-          {categories.map((cat, index) => {
-            let isActive = cat.strCategory == activeCategory;
-            let activeButtonStyle = isActive
-              ? styles.activeButton
-              : styles.inactiveButton;
-            return (
-              <TouchableOpacity
-                key={index}
-                onPress={() => handleChangeCategory(cat.strCategory)}
-                style={styles.categoryContainer}
+            <Image
+              source={{
+                uri: "https://images.unsplash.com/photo-1463740839922-2d3b7e426a56?q=80&w=1900&auto=format&fit=crop",
+              }}
+              style={styles.categoryImage}
+            />
+          </View>
+
+          <Text style={styles.categoryText}>
+            My Favorites
+          </Text>
+        </TouchableOpacity>
+
+        {/* Recipe Categories */}
+        {categories.map((cat) => {
+          const isActive =
+            cat.strCategory === activeCategory;
+
+          return (
+            <TouchableOpacity
+              key={cat.idCategory}
+              onPress={() =>
+                handleChangeCategory(cat.strCategory)
+              }
+              style={styles.categoryContainer}
+              accessibilityRole="button"
+              accessibilityLabel={cat.strCategory}
+              accessibilityState={{
+                selected: isActive,
+              }}
+            >
+              <View
+                style={[
+                  styles.imageContainer,
+                  isActive
+                    ? styles.activeButton
+                    : styles.inactiveButton,
+                ]}
               >
-                <View style={[styles.imageContainer, activeButtonStyle]}>
-                  <Image
-                    source={{ uri: cat.strCategoryThumb }}
-                    style={styles.categoryImage}
-                  />
-                </View>
-                <Text style={styles.categoryText}>{cat.strCategory}</Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-      </Animated.View>
-    );
-  }
-  
-  const styles = StyleSheet.create({
-    scrollContainer: {
-      paddingHorizontal: 15,
-    },
-    categoryContainer: {
-      alignItems: "center",
-      marginRight: wp(4),
-    },
-    imageContainer: {
-      borderRadius: 9999,
-      padding: 6,
-    },
-    activeButton: {
-      backgroundColor: "#F59E0B",
-    },
-    inactiveButton: {
-      backgroundColor: "rgba(0, 0, 0, 0.1)",
-    },
-    categoryImage: {
-      width: hp(6),
-      height: hp(6),
-      borderRadius: 9999,
-    },
-    categoryText: {
-      fontSize: hp(1.6),
-      color: "#52525B",
-      marginTop: hp(0.5),
-    },
-    // Styles for "My Food" category
-    myFoodButton: {
-      backgroundColor: "#4ADE80",
-      justifyContent: "center",
-      alignItems: "center",
-      borderRadius: 50,
-    },
-    myFoodText: {
-      color: "white",
-      fontWeight: "bold",
-      fontSize: hp(1.5),
-    },
-  });
-  
+                <Image
+                  source={{
+                    uri: cat.strCategoryThumb,
+                  }}
+                  style={styles.categoryImage}
+                />
+              </View>
+
+              <Text
+                style={[
+                  styles.categoryText,
+                  isActive && styles.activeCategoryText,
+                ]}
+              >
+                {cat.strCategory}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+    </Animated.View>
+  );
+}
+
+const styles = StyleSheet.create({
+  scrollContainer: {
+    paddingHorizontal: 15,
+    paddingVertical: hp(1),
+    alignItems: "center",
+  },
+
+
+categoryContainer: {
+  alignItems: "center",
+  marginRight: 12,
+  width: 96,
+},
+
+
+  imageContainer: {
+    borderRadius: 9999,
+    padding: 6,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  activeButton: {
+    backgroundColor: "#F59E0B",
+  },
+
+  inactiveButton: {
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
+  },
+
+  categoryImage: {
+    width: hp(6),
+    height: hp(6),
+    borderRadius: 9999,
+  },
+
+
+categoryText: {
+  fontSize: 13,
+  color: "#52525B",
+  marginTop: 6,
+  textAlign: "center",
+  flexWrap: "wrap",
+},
+
+
+  activeCategoryText: {
+    color: "#F59E0B",
+    fontWeight: "bold",
+  },
+
+  myFoodButton: {
+    backgroundColor: "#4ADE80",
+    borderRadius: 9999,
+  },
+});
